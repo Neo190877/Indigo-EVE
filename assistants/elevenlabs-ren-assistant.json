@@ -1,0 +1,78 @@
+{
+  "metadata": {
+    "name": "Ren-Brand-{{CLIENT_NAME}}",
+    "version": "1.0.0",
+    "type": "elevenlabs-assistant",
+    "description": "Brand voice assistant for {{CLIENT_NAME}} powered by ElevenLabs",
+    "created_by": "Indigo-EVE Framework"
+  },
+  "elevenlabs": {
+    "assistant_name": "Ren",
+    "voice_id": "",
+    "model_id": "eleven_monolingual_v1",
+    "voice_settings": {
+      "stability": 0.50,
+      "similarity_boost": 0.75,
+      "style": 0.00,
+      "use_speaker_boost": true
+    },
+    "audio": {
+      "optimize_streaming_latency": 2,
+      "output_format": "mp3_44100_128"
+    },
+    "generation": {
+      "model_id": "eleven_multilingual_v2",
+      "language_code": "en"
+    }
+  },
+  "conversation": {
+    "greeting": "Hello! I'm Ren, your brand assistant. How can I help you today?",
+    "response_type": "conversational",
+    "personality": "professional-friendly",
+    "tone": "warm-engaging",
+    "max_response_length": 500,
+    "stay_on_brand": true,
+    "avoid_controversial": true
+  },
+  "content": {
+    "use_cases": [
+      "brand_messaging",
+      "product_descriptions",
+      "marketing_content",
+      "customer_communications"
+    ],
+    "brand_voice": {
+      "adjectives": [
+        "confident",
+        "innovative",
+        "trustworthy",
+        "engaging"
+      ],
+      "avoid": [
+        "jargon",
+        "technical_complexity",
+        "passive_voice"
+      ]
+    }
+  },
+  "integrations": {
+    "content_management": {
+      "enabled": false,
+      "provider": ""
+    },
+    "social_media": {
+      "enabled": false,
+      "platforms": []
+    },
+    "analytics": {
+      "enabled": true,
+      "track_generations": true,
+      "track_usage": true
+    }
+  },
+  "prompt_file": "../prompts/ren-brand-system-prompt.md",
+  "knowledge_base": [
+    "../knowledge/brand",
+    "../knowledge/{{CLIENT_NAME}}"
+  ]
+}

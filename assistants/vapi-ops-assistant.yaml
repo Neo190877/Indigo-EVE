@@ -1,0 +1,73 @@
+# Vapi Assistant Configuration - EVE (Operations)
+# This template configures the EVE operational voice assistant via Vapi
+
+metadata:
+  name: "EVE-Ops-{{CLIENT_NAME}}"
+  version: "1.0.0"
+  type: "vapi-assistant"
+  description: "Operational voice assistant for {{CLIENT_NAME}} powered by Vapi"
+  created_by: "Indigo-EVE Framework"
+
+# Vapi-specific configuration
+vapi:
+  # Assistant identity
+  assistant_name: "EVE"
+  voice_id: "default-professional"  # Replace with specific Vapi voice ID
+  
+  # Conversation settings
+  conversation:
+    first_message: "Hello, this is EVE. How can I assist you today?"
+    end_call_phrases:
+      - "goodbye"
+      - "thank you, that's all"
+      - "end call"
+    max_duration_seconds: 1800  # 30 minutes
+    
+  # Speech settings
+  speech:
+    model: "gpt-4"
+    temperature: 0.7
+    max_tokens: 150
+    
+  # Voice settings
+  voice:
+    stability: 0.75
+    similarity_boost: 0.80
+    speed: 1.0
+    
+  # Function calling / tools
+  functions:
+    - name: "schedule_appointment"
+      description: "Schedule an appointment for the caller"
+      enabled: true
+      
+    - name: "transfer_to_human"
+      description: "Transfer call to human agent"
+      enabled: true
+      
+    - name: "lookup_information"
+      description: "Look up information from knowledge base"
+      enabled: true
+
+# Integration settings
+integrations:
+  crm:
+    enabled: false
+    provider: ""  # e.g., "salesforce", "hubspot"
+    
+  calendar:
+    enabled: false
+    provider: ""  # e.g., "google-calendar", "outlook"
+    
+  analytics:
+    enabled: true
+    track_calls: true
+    track_sentiment: true
+
+# Prompt configuration reference
+prompt_file: "../prompts/eve-ops-system-prompt.md"
+
+# Knowledge base reference
+knowledge_base:
+  - "../knowledge/operations"
+  - "../knowledge/{{CLIENT_NAME}}"
