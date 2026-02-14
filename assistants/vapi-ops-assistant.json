@@ -1,0 +1,69 @@
+{
+  "metadata": {
+    "name": "EVE-Ops-{{CLIENT_NAME}}",
+    "version": "1.0.0",
+    "type": "vapi-assistant",
+    "description": "Operational voice assistant for {{CLIENT_NAME}} powered by Vapi",
+    "created_by": "Indigo-EVE Framework"
+  },
+  "vapi": {
+    "assistant_name": "EVE",
+    "voice_id": "default-professional",
+    "conversation": {
+      "first_message": "Hello, this is EVE. How can I assist you today?",
+      "end_call_phrases": [
+        "goodbye",
+        "thank you, that's all",
+        "end call"
+      ],
+      "max_duration_seconds": 1800
+    },
+    "speech": {
+      "model": "gpt-4",
+      "temperature": 0.7,
+      "max_tokens": 150
+    },
+    "voice": {
+      "stability": 0.75,
+      "similarity_boost": 0.80,
+      "speed": 1.0
+    },
+    "functions": [
+      {
+        "name": "schedule_appointment",
+        "description": "Schedule an appointment for the caller",
+        "enabled": true
+      },
+      {
+        "name": "transfer_to_human",
+        "description": "Transfer call to human agent",
+        "enabled": true
+      },
+      {
+        "name": "lookup_information",
+        "description": "Look up information from knowledge base",
+        "enabled": true
+      }
+    ]
+  },
+  "integrations": {
+    "crm": {
+      "enabled": false,
+      "provider": ""
+    },
+    "calendar": {
+      "enabled": false,
+      "provider": ""
+    },
+    "analytics": {
+      "enabled": true,
+      "track_calls": true,
+      "track_sentiment": true
+    }
+  },
+  "prompt_file": "../prompts/eve-ops-system-prompt.md",
+  "knowledge_base": [
+    "../knowledge/operations",
+    "../knowledge/{{CLIENT_NAME}}"
+  ]
+}

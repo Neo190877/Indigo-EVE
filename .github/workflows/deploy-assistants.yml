@@ -1,0 +1,154 @@
+name: Deploy Assistant Updates
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'assistants/**'
+      - 'prompts/**'
+      - 'knowledge/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      assistant_type:
+        description: 'Assistant type to deploy'
+        required: true
+        type: choice
+        options:
+          - all
+          - vapi-ops
+          - elevenlabs-ren
+
+jobs:
+  deploy-configs:
+    name: Deploy Assistant Configurations
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Display deployment info
+        run: |
+          echo "🚀 Deploying Indigo-EVE Assistant Configurations"
+          echo "Environment: ${{ github.event.inputs.environment || 'production' }}"
+          echo "Assistant Type: ${{ github.event.inputs.assistant_type || 'all' }}"
+          echo "Triggered by: ${{ github.event_name }}"
+
+      - name: Validate configurations before deployment
+        run: |
+          echo "Running pre-deployment validation..."
+          python -c "
+          import yaml
+          import json
+          from pathlib import Path
+          
+          # Validate YAML
+          for yaml_file in Path('assistants').glob('*.yaml'):
+              with open(yaml_file) as f:
+                  yaml.safe_load(f)
+              print(f'✓ {yaml_file} validated')
+          
+          # Validate JSON
+          for json_file in Path('assistants').glob('*.json'):
+              with open(json_file) as f:
+                  json.load(f)
+              print(f'✓ {json_file} validated')
+          
+          print('\n✅ All configurations validated successfully!')
+          "
+
+      - name: Package configurations
+        run: |
+          echo "Packaging configurations for deployment..."
+          mkdir -p dist
+          
+          # Create deployment package
+          tar -czf dist/indigo-eve-configs.tar.gz \
+            assistants/ \
+            prompts/ \
+            knowledge/ \
+            README.md
+          
+          echo "✓ Configuration package created: dist/indigo-eve-configs.tar.gz"
+          ls -lh dist/
+
+      - name: Generate deployment manifest
+        run: |
+          echo "Generating deployment manifest..."
+          python -c "
+          import json
+          from datetime import datetime
+          from pathlib import Path
+          
+          manifest = {
+              'version': '1.0.0',
+              'deployed_at': datetime.utcnow().isoformat(),
+              'environment': '${{ github.event.inputs.environment || 'production' }}',
+              'commit_sha': '${{ github.sha }}',
+              'assistant_type': '${{ github.event.inputs.assistant_type || 'all' }}',
+              'files': {
+                  'assistants': [str(f.name) for f in Path('assistants').glob('*.{yaml,json}')],
+                  'prompts': [str(f.name) for f in Path('prompts').glob('*.md')],
+                  'knowledge_dirs': [str(d.name) for d in Path('knowledge').iterdir() if d.is_dir()]
+              }
+          }
+          
+          with open('dist/deployment-manifest.json', 'w') as f:
+              json.dump(manifest, f, indent=2)
+          
+          print('✓ Deployment manifest generated')
+          print(json.dumps(manifest, indent=2))
+          "
+
+      - name: Upload deployment artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: indigo-eve-deployment-${{ github.sha }}
+          path: dist/
+          retention-days: 30
+
+      # Placeholder for actual deployment steps
+      # In real implementation, you would deploy to your infrastructure here
+      - name: Deployment placeholder
+        run: |
+          echo "📦 Deployment artifacts ready"
+          echo ""
+          echo "In production, this step would:"
+          echo "  1. Deploy to Vapi platform (for EVE-Ops)"
+          echo "  2. Deploy to ElevenLabs (for Ren-Brand)"
+          echo "  3. Update environment-specific configurations"
+          echo "  4. Run post-deployment validation"
+          echo ""
+          echo "Configure deployment secrets:"
+          echo "  - VAPI_API_KEY: Vapi API authentication"
+          echo "  - ELEVENLABS_API_KEY: ElevenLabs API authentication"
+          echo "  - DEPLOYMENT_WEBHOOK: Optional webhook for notifications"
+
+      - name: Deployment summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Status:** Configurations validated and packaged" >> $GITHUB_STEP_SUMMARY
+          echo "📦 **Package:** indigo-eve-configs.tar.gz" >> $GITHUB_STEP_SUMMARY
+          echo "🔖 **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "🌍 **Environment:** ${{ github.event.inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
+          echo "🤖 **Assistant:** ${{ github.event.inputs.assistant_type || 'all' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Configure API keys in repository secrets" >> $GITHUB_STEP_SUMMARY
+          echo "2. Set up deployment targets (Vapi/ElevenLabs)" >> $GITHUB_STEP_SUMMARY
+          echo "3. Implement deployment integration" >> $GITHUB_STEP_SUMMARY
+          echo "4. Enable automated deployment" >> $GITHUB_STEP_SUMMARY

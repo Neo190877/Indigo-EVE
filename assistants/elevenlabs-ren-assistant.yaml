@@ -1,0 +1,92 @@
+# ElevenLabs Assistant Configuration - Ren (Brand)
+# This template configures the Ren brand voice assistant via ElevenLabs
+
+metadata:
+  name: "Ren-Brand-{{CLIENT_NAME}}"
+  version: "1.0.0"
+  type: "elevenlabs-assistant"
+  description: "Brand voice assistant for {{CLIENT_NAME}} powered by ElevenLabs"
+  created_by: "Indigo-EVE Framework"
+
+# ElevenLabs-specific configuration
+elevenlabs:
+  # Assistant identity
+  assistant_name: "Ren"
+  voice_id: ""  # Replace with specific ElevenLabs voice ID
+  model_id: "eleven_monolingual_v1"
+  
+  # Voice settings
+  voice_settings:
+    stability: 0.50
+    similarity_boost: 0.75
+    style: 0.00  # 0 = more stable, 1 = more expressive
+    use_speaker_boost: true
+    
+  # Audio settings
+  audio:
+    optimize_streaming_latency: 2  # 0-4, higher = lower latency
+    output_format: "mp3_44100_128"
+    
+  # Generation settings
+  generation:
+    model_id: "eleven_multilingual_v2"
+    language_code: "en"
+    
+# Conversational AI settings
+conversation:
+  # Initial greeting
+  greeting: "Hello! I'm Ren, your brand assistant. How can I help you today?"
+  
+  # Conversation flow
+  response_type: "conversational"  # conversational | informational | transactional
+  personality: "professional-friendly"
+  tone: "warm-engaging"
+  
+  # Guardrails
+  max_response_length: 500  # characters
+  stay_on_brand: true
+  avoid_controversial: true
+
+# Content generation settings
+content:
+  # Use cases
+  use_cases:
+    - "brand_messaging"
+    - "product_descriptions"
+    - "marketing_content"
+    - "customer_communications"
+    
+  # Brand voice attributes
+  brand_voice:
+    adjectives:
+      - "confident"
+      - "innovative"
+      - "trustworthy"
+      - "engaging"
+    avoid:
+      - "jargon"
+      - "technical_complexity"
+      - "passive_voice"
+
+# Integration settings
+integrations:
+  content_management:
+    enabled: false
+    provider: ""  # e.g., "contentful", "wordpress"
+    
+  social_media:
+    enabled: false
+    platforms: []  # e.g., ["twitter", "linkedin"]
+    
+  analytics:
+    enabled: true
+    track_generations: true
+    track_usage: true
+
+# Prompt configuration reference
+prompt_file: "../prompts/ren-brand-system-prompt.md"
+
+# Knowledge base reference
+knowledge_base:
+  - "../knowledge/brand"
+  - "../knowledge/{{CLIENT_NAME}}"
